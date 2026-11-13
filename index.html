@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gabaritou_LG_2.0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap">
+<style>
+html{color-scheme:light}
+/* Conceito: caderno de provas e folha de gabarito. Fundo frio, cartões brancos como folhas, azul de caneta como acento. */
+:root{
+  --bg:#F3F4F8; --surface:#FFFFFF; --fg:#14172B; --muted:#5B6179; --line:#DCDFEA;
+  --accent:#2F3FD4; --accent-fg:#FFFFFF; --accent-soft:#E7EAFF;
+  --ok:#0F7A57; --ok-soft:#DCF3E9; --bad:#C0332A; --bad-soft:#FBE3E0; --warn:#8F5A00; --warn-soft:#FFEFC9;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1120; --surface:#181B30; --fg:#ECEEF8; --muted:#9AA0BC; --line:#2A2E4A;
+    --accent:#8B97FF; --accent-fg:#0F1120; --accent-soft:#252A55;
+    --ok:#4FD1A0; --ok-soft:#14352B; --bad:#FF8A80; --bad-soft:#3A1D1B; --warn:#F2C260; --warn-soft:#3A2D10;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1120; --surface:#181B30; --fg:#ECEEF8; --muted:#9AA0BC; --line:#2A2E4A;
+  --accent:#8B97FF; --accent-fg:#0F1120; --accent-soft:#252A55;
+  --ok:#4FD1A0; --ok-soft:#14352B; --bad:#FF8A80; --bad-soft:#3A1D1B; --warn:#F2C260; --warn-soft:#3A2D10;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45;margin:0}
+.wrap{max-width:780px;margin:0 auto;padding-block:18px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:24px} h2{font-size:21px} h3{font-size:16px}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.who{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;min-width:0}
+.who img{width:26px;height:26px;border-radius:50%}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;color:var(--muted);font-weight:600;cursor:pointer;white-space:nowrap;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:focus-visible,.btn:focus-visible,.chip:focus-visible,.seg button:focus-visible,.card.click:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card.click{cursor:pointer;text-align:left;width:100%}
+.card.click:hover{border-color:var(--accent)}
+.card h3{margin-bottom:2px}
+
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer;min-height:40px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn.danger{color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.btn.big{padding:16px 18px;font-size:16px;min-height:56px;border-radius:14px}
+.btn.sm{padding:5px 9px;min-height:32px;font-size:13px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.ic{display:inline-flex;width:18px;height:18px}
+.ic svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--muted)}
+input[type=text],input[type=number],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;color:var(--fg);min-width:0}
+textarea{resize:vertical;min-height:84px}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{appearance:none;border:0;background:none;padding:8px 14px;font-weight:600;color:var(--muted);cursor:pointer;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.opt{display:flex;align-items:center;gap:8px}
+.opt .l{width:22px;font-weight:700;color:var(--muted);text-align:center}
+.opt input[type=radio]{accent-color:var(--accent);width:18px;height:18px;flex:none}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.check input{accent-color:var(--accent);width:18px;height:18px}
+
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.plain{background:var(--bg);color:var(--muted)}
+.notice{padding:10px 12px;border-radius:10px;font-size:14px;background:var(--warn-soft);color:var(--warn)}
+.notice.ok{background:var(--ok-soft);color:var(--ok)} .notice.bad{background:var(--bad-soft);color:var(--bad)} .notice.info{background:var(--accent-soft);color:var(--accent)}
+
+.qitem{display:flex;gap:12px;align-items:flex-start}
+.qn{font-family:var(--f-display);font-weight:700;font-size:18px;min-width:28px;color:var(--accent)}
+.qtxt{overflow-wrap:anywhere}
+.qopts{display:grid;grid-template-columns:1fr;gap:2px;margin-top:6px;font-size:13px;color:var(--muted)}
+.qopts .right{color:var(--ok);font-weight:600}
+
+.sect{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px}
+.sect h3{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-family:var(--f-body);font-weight:600}
+
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent)}
+
+.ans{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:8px}
+.arow{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.arow .n{width:22px;text-align:right;font-weight:700;font-size:13px;color:var(--muted)}
+.chip{appearance:none;width:27px;height:27px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;padding:0}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chip.key{border-color:var(--ok);color:var(--ok)}
+.chip[aria-pressed="true"].key{background:var(--ok);color:var(--surface)}
+.chip[aria-pressed="true"].wrong{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.arow.flag{border-color:var(--warn);background:var(--warn-soft)}
+.preview{width:100%;max-width:460px;border-radius:12px;border:1px solid var(--line);display:block}
+
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+.t th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;font-weight:600;padding:6px 8px}
+.t td{padding:10px 8px;border-top:1px solid var(--line);vertical-align:middle}
+.t td.r,.t th.r{text-align:right}
+.scroll{overflow-x:auto}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-family:var(--f-display);font-size:22px}
+.stat span{font-size:12px;color:var(--muted)}
+.detail{background:var(--bg);border-radius:10px;padding:10px 12px;margin-top:8px}
+.openin{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:4px 0}
+.openin input{width:84px;text-align:right}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;max-width:90vw;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty h3{color:var(--fg);margin-bottom:6px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation-duration:2s}.toast{transition:none}}
+.krow{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.krow.flag{border-color:var(--warn);background:var(--warn-soft)}
+.krow .n{width:24px;text-align:right;font-weight:700;font-size:13px;color:var(--muted)}
+.krow select{width:auto;padding:6px 8px}
+.krow input[type=text]{width:64px;padding:6px 8px;text-align:right}
+.credit{margin-top:28px;text-align:center;font-size:12px;color:var(--muted)}
+input[type=file]{display:none}
+</style>
+
+<meta name="theme-color" content="#2F3FD4">
+<meta name="description" content="Gabaritou LG 2.0 — criação de provas, gabaritos e correção de folhas-resposta.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gabaritou LG">
+
+</head><body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="9" fill="var(--accent)"/><circle cx="11" cy="11" r="3.4" fill="none" stroke="var(--accent-fg)" stroke-width="1.8"/><circle cx="23" cy="11" r="3.4" fill="var(--accent-fg)"/><circle cx="11" cy="23" r="3.4" fill="var(--accent-fg)"/><circle cx="23" cy="23" r="3.4" fill="none" stroke="var(--accent-fg)" stroke-width="1.8"/></svg>
+      <h1>Gabaritou_LG_2.0</h1>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+  <nav class="tabs" id="nav" role="tablist" aria-label="Seções"></nav>
+  <main id="main"></main>
+  <footer class="credit">Desenvolvido por Laecio Gomes</footer>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+'use strict';
+
+const SHEET = {
+  W: 210, H: 297,
+  markers: [[14, 14], [196, 14], [196, 283], [14, 283]], // TL, TR, BR (grande), BL
+  markerSizes: [8, 8, 14, 8],
+  maxQuestions: 75, maxCols: 3,
+  colStarts: { 1: [79], 2: [48, 108], 3: [20, 78, 136] },
+  rowY0: 76, rowPitch: 8, optOffset: 12, optPitch: 9, bubbleR: 2.6, headerY: 69,
+  codeY: 47, bitSize: 4, bitPitch: 6, verX0: 44, stuX0: 98, verBits: 3, stuBits: 8,
+};
+
+function sheetLayout(n) {
+  const cols = Math.min(SHEET.maxCols, Math.max(1, Math.ceil(n / 25)));
+  const rows = Math.max(1, Math.ceil(n / cols));
+  return { cols, rows };
+}
+function colX0(c, lay) { return SHEET.colStarts[lay.cols][c]; }
+function bubblePos(q, o, lay) {
+  const c = Math.floor(q / lay.rows), r = q % lay.rows;
+  return [colX0(c, lay) + SHEET.optOffset + o * SHEET.optPitch, SHEET.rowY0 + r * SHEET.rowPitch];
+}
+function codeBitPos(kind, i) {
+  return kind === 'v' ? [SHEET.verX0 + i * SHEET.bitPitch, SHEET.codeY] : [SHEET.stuX0 + i * SHEET.bitPitch, SHEET.codeY];
+}
+function toBits(value, count) {
+  const a = [];
+  for (let i = count - 1; i >= 0; i--) a.push((value >> i) & 1);
+  return a;
+}
+function fromBits(arr) { return arr.reduce((a, b) => a * 2 + b, 0); }
+
+/* ---------- Versões embaralhadas (determinísticas pela semente da prova) ---------- */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffled(arr, rnd) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+/* Versão 0 (A) = ordem original. Demais: objetivas e alternativas embaralhadas. */
+/* Prova só com gabarito: sem texto de questões, cada versão tem o seu gabarito em exam.keys[v]. */
+function keyComplete(exam) {
+  if (exam.mode !== 'key') return true;
+  const items = exam.items || [];
+  for (let v = 0; v < (exam.versions || 1); v++) {
+    const k = (exam.keys && exam.keys[v]) || [];
+    for (let i = 0; i < items.length; i++) if (!Number.isInteger(k[i]) || k[i] < 0 || k[i] >= ((items[i].options || []).length || exam.nOpt)) return false;
+  }
+  return true;
+}
+function buildVersion(exam, v) {
+  const items = exam.items || [];
+  if (exam.mode === 'key') {
+    const keys = (exam.keys && exam.keys[v]) || [];
+    const obj = items.filter(i => i.type === 'obj').map((item, i) => ({ item, perm: item.options.map((_, k) => k), correctPos: Number.isInteger(keys[i]) ? keys[i] : null }));
+    return { obj, open: [] };
+  }
+  const rnd = mulberry32(((exam.seed | 0) ^ Math.imul(v + 1, 2654435761)) >>> 0);
+  let obj = items.filter(i => i.type === 'obj');
+  const open = items.filter(i => i.type === 'open');
+  if (v > 0) obj = shuffled(obj, rnd);
+  const out = obj.map(item => {
+    const idx = item.options.map((_, k) => k);
+    const perm = (v > 0 && !item.fixOpts) ? shuffled(idx, rnd) : idx;
+    return { item, perm, correctPos: perm.indexOf(item.correct) };
+  });
+  return { obj: out, open };
+}
+function gradeObj(exam, v, answers) {
+  const ver = buildVersion(exam, v);
+  let pts = 0, max = 0, right = 0;
+  ver.obj.forEach((q, i) => {
+    const p = Number(q.item.points) || 0;
+    max += p;
+    if (answers && answers[i] === q.correctPos) { pts += p; right++; }
+  });
+  return { pts, max, right, n: ver.obj.length };
+}
+
+/* ---------- Geometria ---------- */
+function gauss(A, b) {
+  const n = b.length;
+  const M = A.map((r, i) => [...r, b[i]]);
+  for (let c = 0; c < n; c++) {
+    let p = c;
+    for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+    if (Math.abs(M[p][c]) < 1e-12) return null;
+    [M[c], M[p]] = [M[p], M[c]];
+    for (let r = 0; r < n; r++) {
+      if (r === c) continue;
+      const f = M[r][c] / M[c][c];
+      for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+    }
+  }
+  return M.map((r, i) => r[n] / r[i]);
+}
+function solveHomography(src, dst) {
+  const A = [], b = [];
+  for (let i = 0; i < 4; i++) {
+    const [x, y] = src[i], [u, v] = dst[i];
+    A.push([x, y, 1, 0, 0, 0, -x * u, -y * u]); b.push(u);
+    A.push([0, 0, 0, x, y, 1, -x * v, -y * v]); b.push(v);
+  }
+  return gauss(A, b);
+}
+function applyH(h, x, y) {
+  const d = h[6] * x + h[7] * y + 1;
+  return [(h[0] * x + h[1] * y + h[2]) / d, (h[3] * x + h[4] * y + h[5]) / d];
+}
+function diskMean(gray, W, H, cx, cy, r) {
+  const x0 = Math.max(0, Math.floor(cx - r)), x1 = Math.min(W - 1, Math.ceil(cx + r));
+  const y0 = Math.max(0, Math.floor(cy - r)), y1 = Math.min(H - 1, Math.ceil(cy + r));
+  const r2 = r * r;
+  let s = 0, c = 0;
+  for (let y = y0; y <= y1; y++) {
+    for (let x = x0; x <= x1; x++) {
+      const dx = x - cx, dy = y - cy;
+      if (dx * dx + dy * dy <= r2) { s += gray[y * W + x]; c++; }
+    }
+  }
+  return c ? s / c : 255;
+}
+
+/* ---------- Detecção dos 4 cantos ---------- */
+function darkMask(gray, W, H) {
+  const win = Math.max(25, Math.round(W / 7) | 1);
+  const half = win >> 1;
+  const W1 = W + 1;
+  const I = new Float64Array(W1 * (H + 1));
+  for (let y = 0; y < H; y++) {
+    let row = 0;
+    for (let x = 0; x < W; x++) {
+      row += gray[y * W + x];
+      I[(y + 1) * W1 + (x + 1)] = I[y * W1 + (x + 1)] + row;
+    }
+  }
+  const mask = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) {
+    const ya = Math.max(0, y - half), yb = Math.min(H - 1, y + half);
+    for (let x = 0; x < W; x++) {
+      const xa = Math.max(0, x - half), xb = Math.min(W - 1, x + half);
+      const sum = I[(yb + 1) * W1 + (xb + 1)] - I[ya * W1 + (xb + 1)] - I[(yb + 1) * W1 + xa] + I[ya * W1 + xa];
+      const mean = sum / ((xb - xa + 1) * (yb - ya + 1));
+      const g = gray[y * W + x];
+      if (g < mean * 0.72 && g < 170) mask[y * W + x] = 1;
+    }
+  }
+  return mask;
+}
+function findBlobs(mask, W, H, minArea) {
+  const blobs = [];
+  const stack = new Int32Array(W * H);
+  for (let s = 0; s < W * H; s++) {
+    if (mask[s] !== 1) continue;
+    let sp = 0;
+    stack[sp++] = s; mask[s] = 2;
+    let minx = W, maxx = 0, miny = H, maxy = 0, area = 0, sx = 0, sy = 0;
+    while (sp) {
+      const p = stack[--sp];
+      const x = p % W, y = (p - x) / W;
+      area++; sx += x; sy += y;
+      if (x < minx) minx = x; if (x > maxx) maxx = x;
+      if (y < miny) miny = y; if (y > maxy) maxy = y;
+      if (x > 0 && mask[p - 1] === 1) { mask[p - 1] = 2; stack[sp++] = p - 1; }
+      if (x < W - 1 && mask[p + 1] === 1) { mask[p + 1] = 2; stack[sp++] = p + 1; }
+      if (y > 0 && mask[p - W] === 1) { mask[p - W] = 2; stack[sp++] = p - W; }
+      if (y < H - 1 && mask[p + W] === 1) { mask[p + W] = 2; stack[sp++] = p + W; }
+    }
+    if (area >= minArea) blobs.push({ area, minx, maxx, miny, maxy, cx: sx / area, cy: sy / area });
+  }
+  return blobs;
+}
+function orderCorners(pts) {
+  let tl = 0, br = 0, tr = 0, bl = 0;
+  pts.forEach((p, i) => {
+    if (p.cx + p.cy < pts[tl].cx + pts[tl].cy) tl = i;
+    if (p.cx + p.cy > pts[br].cx + pts[br].cy) br = i;
+    if (p.cx - p.cy > pts[tr].cx - pts[tr].cy) tr = i;
+    if (p.cx - p.cy < pts[bl].cx - pts[bl].cy) bl = i;
+  });
+  if (new Set([tl, tr, br, bl]).size !== 4) return null;
+  return [pts[tl], pts[tr], pts[br], pts[bl]];
+}
+function polyArea(p) {
+  let a = 0;
+  for (let i = 0; i < p.length; i++) {
+    const q = p[(i + 1) % p.length];
+    a += p[i].cx * q.cy - q.cx * p[i].cy;
+  }
+  return Math.abs(a) / 2;
+}
+function markerLike(b, W) {
+  const bw = b.maxx - b.minx + 1, bh = b.maxy - b.miny + 1;
+  const fill = b.area / (bw * bh), ar = bw / bh;
+  return bw >= W * 0.012 && bw <= W * 0.3 && ar > 0.5 && ar < 2 && fill >= 0.7;
+}
+/* Mais de um quadrado grande de canto na foto = mais de uma folha. */
+function hasSeveralSheets(blobs, W) {
+  const c = blobs.filter(b => markerLike(b, W));
+  if (!c.length) return false;
+  const mx = Math.max(...c.map(b => b.area));
+  return c.filter(b => b.area >= 0.6 * mx).length >= 2;
+}
+function pickCorners(blobs, W) {
+  const c = blobs.filter(b => markerLike(b, W));
+  c.sort((a, b) => b.area - a.area);
+  const top = c.slice(0, 9);
+  let best = null;
+  for (let i = 0; i < top.length; i++) for (let j = i + 1; j < top.length; j++)
+    for (let k = j + 1; k < top.length; k++) for (let l = k + 1; l < top.length; l++) {
+      const pts = [top[i], top[j], top[k], top[l]];
+      const areas = pts.map(p => p.area).sort((a, b) => b - a);
+      if (areas[0] < 1.8 * areas[1]) continue;       // precisa haver um canto grande
+      if (areas[1] > 2.6 * areas[3]) continue;       // os outros três são parecidos
+      const ord = orderCorners(pts);
+      if (!ord) continue;
+      const qa = polyArea(ord);
+      if (!best || qa > best.qa) best = { qa, ord };
+    }
+  if (!best) return null;
+  const ord = best.ord;
+  let k = 0;
+  ord.forEach((p, i) => { if (p.area > ord[k].area) k = i; });
+  return [0, 1, 2, 3].map(i => ord[(k + i - 2 + 4) % 4]); // o canto grande vira o BR
+}
+
+/* ---------- Layouts: folha cheia ('f', página A4) e compacta ('c', bloco no fim do caderno) ---------- */
+const COMPACT = {
+  W: 176, H: 92, maxQ: 40, rows: 10,
+  markers: [[6, 6], [170, 6], [170, 86], [6, 86]], markerSizes: [6, 6, 10, 6],
+  colX0: c => 12 + c * 42, optOff: 8, optPitch: 6.2, rowY0: 33, rowPitch: 4.8, bubbleR: 1.8, headerY: 29,
+  codeY: 22, bitSize: 3.4, bitPitch: 5.2, verX0: 16, stuX0: 46,
+  bitPos: (kind, i) => kind === 'v' ? [16 + i * 5.2, 22] : [46 + i * 5.2, 22],
+};
+function compactPos(q, o) { const c = Math.floor(q / COMPACT.rows), r = q % COMPACT.rows; return [COMPACT.colX0(c) + COMPACT.optOff + o * COMPACT.optPitch, COMPACT.rowY0 + r * COMPACT.rowPitch]; }
+function compactBit(kind, i) { return kind === 'v' ? [COMPACT.verX0 + i * COMPACT.bitPitch, COMPACT.codeY] : [COMPACT.stuX0 + i * COMPACT.bitPitch, COMPACT.codeY]; }
+const LAYOUTS = {
+  f: { markers: SHEET.markers, markerSizes: SHEET.markerSizes, bubbleR: SHEET.bubbleR, bitSize: SHEET.bitSize,
+    pos: (q, o, n) => bubblePos(q, o, sheetLayout(n)), bit: codeBitPos,
+    spots: (() => { const a = []; for (let x = 30; x <= 180; x += 15) for (const y of [73, 277]) a.push([x, y]); return a; })(), spotR: 1.5 },
+  c: { markers: COMPACT.markers, markerSizes: COMPACT.markerSizes, bubbleR: COMPACT.bubbleR, bitSize: COMPACT.bitSize,
+    pos: (q, o) => compactPos(q, o), bit: compactBit,
+    spots: (() => { const a = []; for (const x of [50.5, 92.5, 134.5]) for (const y of [34, 44, 54, 64, 74]) a.push([x, y]); return a; })(), spotR: 1.0 },
+};
+/* Posições e raio dos círculos de uma folha 'f' ou 'c' com n questões. */
+function sheetGeom(kind, n) { const L = LAYOUTS[kind]; return { pos: (q, o) => L.pos(q, o, n), r: L.bubbleR }; }
+
+/* ---------- Leitura ---------- */
+/* Etapa 1: acha a folha, calibra o branco/preto e lê os códigos de versão e aluno. */
+function readSheet(gray, W, H) {
+  const mask = darkMask(gray, W, H);
+  const blobs = findBlobs(mask, W, H, Math.max(20, Math.round(W * W * 0.00001)));
+  if (hasSeveralSheets(blobs, W)) return { ok: false, reason: 'multi' };
+  const quad = pickCorners(blobs, W);
+  if (!quad) return { ok: false, reason: 'corners' };
+  const dst = quad.map(b => [b.cx, b.cy]);
+  const wpx = Math.hypot(dst[1][0] - dst[0][0], dst[1][1] - dst[0][1]);
+  const hpx = Math.hypot(dst[3][0] - dst[0][0], dst[3][1] - dst[0][1]);
+  const ratio = wpx / hpx;
+  const kind = ratio > 0.45 && ratio < 0.95 ? 'f' : (ratio > 1.5 && ratio < 2.8 ? 'c' : null);
+  if (!kind) return { ok: false, reason: 'shape' };
+  const L = LAYOUTS[kind];
+  const h = solveHomography(L.markers, dst);
+  if (!h) return { ok: false, reason: 'shape' };
+  const scale = wpx / (L.markers[1][0] - L.markers[0][0]);
+
+  let black = 0;
+  [0, 1, 3].forEach(i => { black += diskMean(gray, W, H, dst[i][0], dst[i][1], 0.225 * L.markerSizes[0] * scale); });
+  black /= 3;
+  const spots = [];
+  L.spots.forEach(([x, y]) => { const p = applyH(h, x, y); spots.push(diskMean(gray, W, H, p[0], p[1], L.spotR * scale)); });
+  spots.sort((a, b) => a - b);
+  const paper = spots[spots.length >> 1];
+  const range = paper - black;
+  if (range < 50) return { ok: false, reason: 'contrast' };
+
+  const readBits = (which, count) => {
+    const bits = [];
+    for (let i = 0; i < count; i++) {
+      const [mx, my] = L.bit(which, i);
+      const p = applyH(h, mx, my);
+      const m = diskMean(gray, W, H, p[0], p[1], 0.275 * L.bitSize * scale);
+      bits.push((paper - m) / range >= 0.5 ? 1 : 0);
+    }
+    return fromBits(bits);
+  };
+  return {
+    ok: true, kind, h, scale, paper, black, range, dst,
+    version: readBits('v', SHEET.verBits),
+    student: readBits('s', SHEET.stuBits),
+  };
+}
+/* Etapa 2: com o número de alternativas de cada questão, lê as marcações.
+   -1 = em branco, -2 = mais de uma marcada, k >= 0 = alternativa k (na ordem impressa). */
+function readAnswers(sheet, gray, W, H, counts) {
+  const G = sheetGeom(sheet.kind, counts.length);
+  const sampleR = 0.54 * G.r * sheet.scale;
+  const answers = [];
+  counts.forEach((cnt, q) => {
+    const d = [];
+    for (let o = 0; o < cnt; o++) {
+      const [mx, my] = G.pos(q, o);
+      const p = applyH(sheet.h, mx, my);
+      const m = diskMean(gray, W, H, p[0], p[1], sampleR);
+      d.push((sheet.paper - m) / sheet.range);
+    }
+    const marked = [];
+    d.forEach((v, o) => { if (v >= 0.4) marked.push(o); });
+    if (marked.length === 1) { answers.push(marked[0]); return; }
+    if (marked.length > 1) { answers.push(-2); return; }
+    let best = 0;
+    d.forEach((v, o) => { if (v > d[best]) best = o; });
+    const second = Math.max(0.05, ...d.filter((_, o) => o !== best));
+    answers.push(d[best] >= 0.22 && d[best] >= 2 * second ? best : -1);
+  });
+  return answers;
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = { keyComplete, SHEET, COMPACT, LAYOUTS, sheetGeom, compactPos, sheetLayout, colX0, bubblePos, codeBitPos, toBits, fromBits, buildVersion, gradeObj,
+    solveHomography, applyH, readSheet, readAnswers, mulberry32 };
+}
+
+/* Gerador de PDF mínimo (sem biblioteca externa): texto Helvetica, linhas, retângulos e círculos. */
+const MiniPDF = (function () {
+  const WH = [278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584, 761, 556, 278, 222, 556, 333, 1000, 556, 556, 333, 1000, 667, 333, 1000, 278, 611, 278, 278, 222, 222, 333, 333, 350, 556, 1000, 333, 1000, 500, 333, 944, 278, 500, 667, 278, 333, 556, 556, 556, 556, 260, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 556, 537, 278, 333, 333, 365, 556, 834, 834, 834, 611, 667, 667, 667, 667, 667, 667, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 500, 556, 556, 556, 556, 278, 278, 278, 278, 556, 556, 556, 556, 556, 556, 556, 584, 611, 556, 556, 556, 556, 500, 556, 500], WB = [278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611, 975, 722, 722, 722, 722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 333, 278, 333, 584, 556, 333, 556, 611, 556, 611, 556, 333, 611, 611, 278, 278, 556, 278, 889, 611, 611, 611, 611, 389, 556, 333, 611, 556, 778, 556, 556, 500, 389, 280, 389, 584, 761, 556, 278, 278, 556, 500, 1000, 556, 556, 333, 1000, 667, 333, 1000, 278, 611, 278, 278, 278, 278, 500, 500, 350, 556, 1000, 333, 1000, 556, 333, 944, 278, 500, 667, 278, 333, 556, 556, 556, 556, 280, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 611, 556, 278, 333, 333, 365, 556, 834, 834, 834, 611, 722, 722, 722, 722, 722, 722, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 556, 556, 556, 556, 556, 278, 278, 278, 278, 611, 611, 611, 611, 611, 611, 611, 584, 611, 611, 611, 611, 611, 556, 611, 556], SP = {"8364": 128, "8218": 130, "402": 131, "8222": 132, "8230": 133, "8224": 134, "8225": 135, "710": 136, "8240": 137, "352": 138, "8249": 139, "338": 140, "381": 142, "8216": 145, "8217": 146, "8220": 147, "8221": 148, "8226": 149, "8211": 150, "8212": 151, "732": 152, "8482": 153, "353": 154, "8250": 155, "339": 156, "382": 158, "376": 159};
+  const MM = 72 / 25.4;
+  function byteOf(ch) { const c = ch.charCodeAt(0); if (c < 128 || (c >= 160 && c < 256)) return c; return SP[c] != null ? SP[c] : 63; }
+  function enc(s) { let o = ''; for (const ch of String(s)) o += String.fromCharCode(byteOf(ch)); return o; }
+  function esc(b) { return b.replace(/[\\()]/g, m => '\\' + m); }
+  const n = v => (Math.round(v * 1000) / 1000).toString();
+  function J() {
+    this.pages = [[]]; this.cur = 0; this.font = 'F1'; this.style = 'normal'; this.size = 10;
+    this.fill = 0; this.draw = 0; this.txt = 0; this.lw = 0.2;
+  }
+  const P = J.prototype;
+  P.fontName = function () { return this.style === 'bold' ? 'F2' : this.style === 'italic' ? 'F3' : this.style === 'bolditalic' ? 'F4' : 'F1'; };
+  P.setFont = function (_f, style) { this.style = style || 'normal'; return this; };
+  P.setFontSize = function (s) { this.size = s; return this; };
+  P.setFillColor = function (g) { this.fill = g; return this; };
+  P.setDrawColor = function (g) { this.draw = g; return this; };
+  P.setTextColor = function (g) { this.txt = g; return this; };
+  P.setLineWidth = function (w) { this.lw = w; return this; };
+  P.addPage = function () { this.pages.push([]); this.cur = this.pages.length - 1; return this; };
+  P.setPage = function (i) { this.cur = i - 1; return this; };
+  P.getNumberOfPages = function () { return this.pages.length; };
+  P.out = function (s) { this.pages[this.cur].push(s); };
+  P.width = function (s) {
+    const t = this.style === 'bold' || this.style === 'bolditalic' ? WB : WH; let w = 0;
+    for (const ch of String(s)) { const b = byteOf(ch); w += b >= 32 ? t[b - 32] : 0; }
+    return w / 1000 * this.size / MM;
+  };
+  P.splitTextToSize = function (text, maxW) {
+    const lines = [];
+    for (const para of String(text).split('\n')) {
+      let line = '';
+      for (let word of para.split(' ')) {
+        while (this.width(word) > maxW && word.length > 1) {
+          let k = word.length - 1; while (k > 1 && this.width(word.slice(0, k)) > maxW) k--;
+          if (line) { lines.push(line); line = ''; }
+          lines.push(word.slice(0, k)); word = word.slice(k);
+        }
+        const test = line ? line + ' ' + word : word;
+        if (line && this.width(test) > maxW) { lines.push(line); line = word; } else line = test;
+      }
+      lines.push(line);
+    }
+    return lines;
+  };
+  P.text = function (str, x, y, opts) {
+    opts = opts || {};
+    const lines = opts.maxWidth ? this.splitTextToSize(str, opts.maxWidth) : [String(str)];
+    const lh = this.size * 1.15 / MM;
+    lines.forEach((ln, i) => {
+      let xx = x; const w = this.width(ln);
+      if (opts.align === 'right') xx = x - w; else if (opts.align === 'center') xx = x - w / 2;
+      this.out(`BT ${n(this.txt / 255)} g /${this.fontName()} ${n(this.size)} Tf ${n(xx * MM)} ${n((297 - (y + i * lh)) * MM)} Td (${esc(enc(ln))}) Tj ET`);
+    });
+    return this;
+  };
+  P.rect = function (x, y, w, h, style) {
+    const f = style === 'F';
+    this.out(f ? `${n(this.fill / 255)} g ${n(x * MM)} ${n((297 - y - h) * MM)} ${n(w * MM)} ${n(h * MM)} re f`
+      : `${n(this.draw / 255)} G ${n(this.lw * MM)} w ${n(x * MM)} ${n((297 - y - h) * MM)} ${n(w * MM)} ${n(h * MM)} re S`);
+    return this;
+  };
+  P.circle = function (cx, cy, r) {
+    const k = 0.5522847498 * r, X = v => n(v * MM), Y = v => n((297 - v) * MM);
+    this.out(`${n(this.draw / 255)} G ${n(this.lw * MM)} w ${X(cx + r)} ${Y(cy)} m ` +
+      `${X(cx + r)} ${Y(cy - k)} ${X(cx + k)} ${Y(cy - r)} ${X(cx)} ${Y(cy - r)} c ` +
+      `${X(cx - k)} ${Y(cy - r)} ${X(cx - r)} ${Y(cy - k)} ${X(cx - r)} ${Y(cy)} c ` +
+      `${X(cx - r)} ${Y(cy + k)} ${X(cx - k)} ${Y(cy + r)} ${X(cx)} ${Y(cy + r)} c ` +
+      `${X(cx + k)} ${Y(cy + r)} ${X(cx + r)} ${Y(cy + k)} ${X(cx + r)} ${Y(cy)} c S`);
+    return this;
+  };
+  P.line = function (x1, y1, x2, y2) {
+    this.out(`${n(this.draw / 255)} G ${n(this.lw * MM)} w ${n(x1 * MM)} ${n((297 - y1) * MM)} m ${n(x2 * MM)} ${n((297 - y2) * MM)} l S`);
+    return this;
+  };
+  P.output = function () {
+    const objs = []; const add = s => { objs.push(s); return objs.length; };
+    const np = this.pages.length;
+    add('<< /Type /Catalog /Pages 2 0 R >>');
+    add(`<< /Type /Pages /Kids [${this.pages.map((_, i) => (7 + i * 2) + ' 0 R').join(' ')}] /Count ${np} >>`);
+    ['Helvetica', 'Helvetica-Bold', 'Helvetica-Oblique', 'Helvetica-BoldOblique'].forEach(f => add(`<< /Type /Font /Subtype /Type1 /BaseFont /${f} /Encoding /WinAnsiEncoding >>`));
+    this.pages.forEach((ops, i) => {
+      const body = ops.join('\n');
+      add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${n(210 * MM)} ${n(297 * MM)}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents ${8 + i * 2} 0 R >>`);
+      add(`<< /Length ${body.length} >>\nstream\n${body}\nendstream`);
+    });
+    let pdf = '%PDF-1.4\n'; const offs = [];
+    objs.forEach((o, i) => { offs.push(pdf.length); pdf += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+    const xr = pdf.length;
+    pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offs.map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('');
+    pdf += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+    const u = new Uint8Array(pdf.length); for (let i = 0; i < pdf.length; i++) u[i] = pdf.charCodeAt(i) & 255;
+    return new Blob([u], { type: 'application/pdf' });
+  };
+  return J;
+})();
+
+
+/* ============ utilidades ============ */
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3);
+const LETTERS = 'ABCDEFGH';
+const fmt = n => (Math.round(n * 100) / 100).toLocaleString('pt-BR');
+const num = v => { const x = parseFloat(String(v).replace(',', '.')); return isFinite(x) ? x : NaN; };
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const k in props) {
+    const v = props[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v;
+    else if (k === 'on') for (const ev in v) e.addEventListener(ev, v[ev]);
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') e[k] = v;
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    e.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  }
+  return e;
+}
+const ICONS = {
+  camera: '<path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  image: '<rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m5 18 5-5 3 3 2-2 4 4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', back: '<path d="m14 6-6 6 6 6"/>',
+  trash: '<path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/>', edit: '<path d="m5 19 1-4 9-9 3 3-9 9z"/>',
+  up: '<path d="m6 14 6-6 6 6"/>', down: '<path d="m6 10 6 6 6-6"/>',
+  dl: '<path d="M12 4v11m-4-4 4 4 4-4M5 19h14"/>', check: '<path d="m5 12 5 5 9-10"/>',
+  tap: '<path d="M9 11V6a1.5 1.5 0 0 1 3 0v5m0-1.5a1.5 1.5 0 0 1 3 0V12m0-1a1.5 1.5 0 0 1 3 0v4a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-4-2L5 14.5a1.5 1.5 0 0 1 2.3-1.9L9 14"/>',
+};
+function icon(n) { const s = h('span', { class: 'ic', 'aria-hidden': 'true' }); s.innerHTML = '<svg viewBox="0 0 24 24">' + ICONS[n] + '</svg>'; return s; }
+function btn(label, opts = {}) {
+  const b = h('button', { class: 'btn ' + (opts.cls || ''), type: 'button', disabled: opts.disabled, on: { click: opts.on || (() => {}) } },
+    opts.icon ? icon(opts.icon) : null, label ? h('span', null, label) : null);
+  if (opts.title) { b.title = opts.title; b.setAttribute('aria-label', opts.title); }
+  return b;
+}
+function confirmBtn(label, onConfirm, opts = {}) {
+  let armed = false, t = null, b = null;
+  const extra = h('span', null, 'Confirmar?');
+  const reset = () => { armed = false; b.classList.remove('armed'); if (label) b.lastChild.textContent = label; else extra.remove(); };
+  b = btn(label, { cls: 'danger ' + (opts.cls || ''), icon: opts.icon, title: opts.title, on: () => {
+    if (!armed) {
+      armed = true; b.classList.add('armed');
+      if (label) b.lastChild.textContent = 'Confirmar?'; else b.append(extra);
+      t = setTimeout(reset, 3500); return;
+    }
+    clearTimeout(t); reset(); onConfirm();
+  } });
+  return b;
+}
+let toastT;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2800);
+}
+const notice = (txt, cls = '') => h('div', { class: 'notice ' + cls }, txt);
+
+/* ============ estado e banco de dados ============ */
+const S = {
+  db: null, user: null, dl: null, me: null, canWrite: null, local: false,
+  ready: false, loadErr: null,
+  exams: new Map(), bank: new Map(), students: new Map(), results: new Map(),
+  examId: null, unsubs: [], route: { name: 'exams' }, view: null, examTab: 'questoes',
+};
+/* Modo offline: mesma interface do banco do Claude, guardando no navegador. */
+function makeLocalDb() {
+  const KEY = 'gabrapido:v1'; let mem = {}, persist = true;
+  try { const raw = localStorage.getItem(KEY); if (raw) mem = JSON.parse(raw) || {}; } catch (_) { persist = false; }
+  const save = () => { if (!persist) return; try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (_) { persist = false; } };
+  const subs = new Set();
+  const parentOf = p => p.split('/').slice(0, -1).join('/');
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const snap = col => { const docs = Object.keys(mem).filter(p => parentOf(p) === col).sort().map(p => ({ id: p.split('/').pop(), exists: true, data: () => clone(mem[p]) })); return { docs, size: docs.length, empty: !docs.length }; };
+  const fire = () => setTimeout(() => subs.forEach(f => f()), 0);
+  const merge = (a, b) => { for (const k in b) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) merge(a[k], b[k]); else a[k] = b[k]; } return a; };
+  const doc = p => ({ path: p, id: p.split('/').pop(),
+    set: async d => { mem[p] = clone(d); save(); fire(); },
+    update: async d => { if (!mem[p]) throw { code: 'invalid_argument' }; merge(mem[p], clone(d)); save(); fire(); },
+    delete: async () => { delete mem[p]; save(); fire(); },
+    get: async () => ({ exists: !!mem[p], id: p.split('/').pop(), data: () => mem[p] && clone(mem[p]) }) });
+  const collection = p => ({ path: p, doc: id => doc(p + '/' + (id || uid())), get: async () => snap(p),
+    onSnapshot(next) { const f = () => next(snap(p)); subs.add(f); setTimeout(f, 0); return () => subs.delete(f); } });
+  return { doc, collection, persistent: () => persist };
+}
+const MIMES = { pdf: 'application/pdf', csv: 'text/csv', json: 'application/json' };
+const localDl = { save: async ({ filename, data }) => {
+  const ext = filename.split('.').pop().toLowerCase();
+  const blob = data instanceof Blob ? data : new Blob([data], { type: (MIMES[ext] || 'text/plain') + ';charset=utf-8' });
+  try {
+    const f = new File([blob], filename, { type: MIMES[ext] || 'text/plain' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: filename }); return { status: 'saved' }; }
+  } catch (e) { if (e && e.name === 'AbortError') throw { code: 'declined' }; }
+  const url = URL.createObjectURL(blob);
+  const a = h('a', { href: url, download: filename }); document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000); return { status: 'saved' };
+} };
+
+const examOf = id => { const e = S.exams.get(id); return e ? Object.assign({ id }, e) : null; };
+const studentsSorted = () => [...S.students].map(([id, s]) => Object.assign({ id }, s)).sort((a, b) => a.num - b.num);
+const typeLabel = t => t === 'obj' ? 'Objetiva' : 'Aberta';
+
+async function dbop(fn, okMsg) {
+  try { await fn(); if (okMsg) toast(okMsg); return true; }
+  catch (e) {
+    toast(e && e.code === 'invalid_argument' ? 'Sem permissão para alterar. Peça acesso de colaborador ao dono da página.' : 'Não foi possível salvar. Tente de novo.');
+    return false;
+  }
+}
+
+function openExamData(id) {
+  if (S.examId === id) return;
+  closeExamData();
+  S.examId = id;
+  const err = e => { S.loadErr = e; };
+  S.unsubs.push(S.db.collection('exams/' + id + '/students').onSnapshot(s => {
+    S.students = new Map(s.docs.map(d => [d.id, d.data()])); notify();
+  }, err));
+  S.unsubs.push(S.db.collection('exams/' + id + '/results').onSnapshot(s => {
+    S.results = new Map(s.docs.map(d => [d.id, d.data()])); notify();
+  }, err));
+}
+function closeExamData() {
+  S.unsubs.forEach(u => u()); S.unsubs = [];
+  S.examId = null; S.students = new Map(); S.results = new Map();
+}
+function notify() { if (S.view && S.view.update) S.view.update(); }
+
+/* ============ navegação ============ */
+function go(route) { S.route = route; render(); window.scrollTo({ top: 0 }); }
+function render() {
+  const main = document.getElementById('main'), nav = document.getElementById('nav');
+  main.replaceChildren();
+  nav.replaceChildren();
+  if (!S.db) { main.append(viewNoDb()); S.view = null; return; }
+  const r = S.route;
+  if (r.name === 'exam') openExamData(r.id); else closeExamData();
+  if (r.name !== 'exam') {
+    [['exams', 'Provas']].forEach(([k, lbl]) => {
+      nav.append(h('button', { class: 'tab', role: 'tab', 'aria-selected': String(r.name === k), on: { click: () => go({ name: k }) } }, lbl));
+    });
+  }
+  S.view = r.name === 'exams' ? viewExams() : viewExam(r.id);
+  main.append(S.view.el);
+  S.view.update();
+}
+function viewNoDb() {
+  return h('div', { class: 'card empty' }, h('h3', null, 'Abra esta página no Claude'),
+    h('p', null, 'Para guardar as provas e compartilhar a correção com outras pessoas, entre na sua conta Claude e abra o link por lá.'));
+}
+function loadingBox() {
+  return h('div', { class: 'empty' }, h('span', { class: 'spin' }), ' ', 'Carregando…');
+}
+
+/* Provas só com gabarito: questões sem texto, só número, alternativas e pontos. */
+const keyItem = (i, nOpt, pts) => ({ id: 'k' + i, type: 'obj', text: 'Questão ' + (i + 1), options: LETTERS.slice(0, nOpt).split(''), points: pts, fixOpts: true });
+const keyItems = (n, nOpt, pts) => Array.from({ length: n }, (_, i) => keyItem(i, nOpt, pts));
+
+/* ============ lista de provas ============ */
+function viewExams() {
+  const list = h('div', { class: 'stack' });
+  const formHost = h('div');
+  const root = h('div', { class: 'stack' },
+    h('div', { class: 'row between' }, h('h2', null, 'Provas'), h('div', { class: 'row' }, btn('Importar arquivo', { icon: 'dl', on: () => pickImport(null) }), btn('Nova prova', { cls: 'primary', icon: 'plus', on: openForm }))),
+    formHost, list);
+  function openForm() {
+    const title = h('input', { type: 'text', id: 'nx-title', placeholder: 'Ex.: Simulado de Ciências, 7º ano' });
+    let nOpt = 4, vers = 1;
+    const segOpt = seg([[2, '2 (A–B)'], [3, '3 (A–C)'], [4, '4 (A–D)'], [5, '5 (A–E)']], 4, v => nOpt = v);
+    const segVer = seg([[1, '1'], [2, '2'], [3, '3'], [4, '4']], 1, v => vers = v);
+    const nq = h('input', { type: 'text', inputmode: 'numeric', id: 'nx-nq', value: '10' });
+    const pt = h('input', { type: 'text', inputmode: 'decimal', id: 'nx-pt', value: '1' });
+    const f = h('div', { class: 'card stack' },
+      h('h3', null, 'Nova prova'),
+      h('label', { class: 'f', for: 'nx-title' }, 'Título', title),
+      h('div', { class: 'row' },
+        h('label', { class: 'f', for: 'nx-nq', style: 'width:150px' }, 'Número de questões', nq),
+        h('label', { class: 'f', for: 'nx-pt', style: 'width:150px' }, 'Peso de cada questão', pt)),
+      h('div', { class: 'row' }, h('div', { class: 'stack', style: 'gap:5px' }, h('span', { class: 'small muted' }, 'Alternativas por questão (no máximo)'), segOpt),
+        h('div', { class: 'stack', style: 'gap:5px' }, h('span', { class: 'small muted' }, 'Versões (cada uma com o seu gabarito)'), segVer)),
+      h('p', { class: 'small muted' }, 'Depois você ajusta as alternativas e o peso de cada questão, e preenche o gabarito.'),
+      h('div', { class: 'row' },
+        btn('Criar prova', { cls: 'primary', on: async () => {
+          const t = title.value.trim();
+          if (!t) { toast('Dê um título à prova.'); title.focus(); return; }
+          const n = parseInt(nq.value, 10), p = num(pt.value);
+          if (!(n >= 1 && n <= COMPACT.maxQ)) { toast('Informe de 1 a ' + COMPACT.maxQ + ' questões.'); nq.focus(); return; }
+          if (!(p > 0)) { toast('Informe o peso de cada questão (maior que zero).'); pt.focus(); return; }
+          const id = uid();
+          const ok = await dbop(() => S.db.doc('exams/' + id).set({ title: t, mode: 'key', nOpt, dOpt: nOpt, dPt: p, versions: vers, seed: 1, items: keyItems(n, nOpt, p),
+            keys: Array.from({ length: vers }, () => Array(n).fill(null)), createdAt: Date.now(), editedAt: Date.now(), by: S.me && S.me.id || null }));
+          if (ok) { S.examTab = 'questoes'; go({ name: 'exam', id }); }
+        } }),
+        btn('Cancelar', { on: () => formHost.replaceChildren() })));
+    formHost.replaceChildren(f); title.focus();
+  }
+  function update() {
+    if (!S.ready) { list.replaceChildren(loadingBox()); return; }
+    const ex = [...S.exams].map(([id, e]) => Object.assign({ id }, e)).filter(e => e.mode === 'key').sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    if (!ex.length) {
+      list.replaceChildren(h('div', { class: 'card empty' }, h('h3', null, 'Nenhuma prova ainda'),
+        h('p', null, 'Crie uma prova com o gabarito, cadastre os alunos, imprima as folhas e corrija pela foto.')));
+      return;
+    }
+    list.replaceChildren(...ex.map(e => h('button', { class: 'card click', type: 'button', on: { click: () => { S.examTab = 'questoes'; go({ name: 'exam', id: e.id }); } } },
+      h('h3', null, e.title),
+      h('div', { class: 'small muted' }, `${e.items.length} questões · ${e.versions} versão${e.versions === 1 ? '' : 'ões'}`))));
+  }
+  return { el: root, update };
+}
+function seg(options, initial, onChange) {
+  const wrap = h('div', { class: 'seg', role: 'group' });
+  const btns = options.map(([val, lbl]) => h('button', { type: 'button', 'aria-pressed': String(val === initial), on: { click: () => {
+    btns.forEach((b, i) => b.setAttribute('aria-pressed', String(options[i][0] === val)));
+    onChange(val);
+  } } }, lbl));
+  wrap.append(...btns);
+  return wrap;
+}
+
+/* ============ tela da prova ============ */
+function viewExam(id) {
+  const titleEl = h('h2', null, '');
+  const body = h('div');
+  const tabsEl = h('div', { class: 'tabs', role: 'tablist' });
+  let tv = null;
+  const REST = [['alunos', 'Alunos', tabAlunos], ['imprimir', 'Imprimir', tabImprimir], ['corrigir', 'Corrigir', tabCorrigir], ['notas', 'Notas', tabNotas], ['arquivos', 'Arquivos', tabArquivos]];
+  const tabsNow = () => [['questoes', 'Gabarito', tabGabarito], ...REST];
+  function drawTabs() {
+    tabsEl.replaceChildren(...tabsNow().map(([k, l]) => h('button', { class: 'tab', role: 'tab', 'aria-selected': String(S.examTab === k), on: { click: () => setTab(k) } }, l)));
+  }
+  function setTab(k) {
+    S.examTab = k; drawTabs();
+    tv = (tabsNow().find(t => t[0] === k) || tabsNow()[0])[2](id);
+    body.replaceChildren(tv.el); tv.update();
+  }
+  const root = h('div', { class: 'stack' },
+    h('div', { class: 'row' }, btn('Provas', { icon: 'back', on: () => go({ name: 'exams' }) }), h('div', { class: 'grow' })),
+    titleEl, tabsEl, body);
+  let first = true;
+  function update() {
+    if (!S.ready) { body.replaceChildren(loadingBox()); return; }
+    const e = examOf(id);
+    if (!e) { body.replaceChildren(h('div', { class: 'card empty' }, h('h3', null, 'Prova não encontrada'), h('p', null, 'Ela pode ter sido excluída por outra pessoa.'))); tabsEl.replaceChildren(); return; }
+    titleEl.textContent = e.title;
+    if (first || !tv) { first = false; setTab(S.examTab); } else tv.update();
+  }
+  return { el: root, update };
+}
+
+/* ---- Gabarito (provas só com gabarito) ---- */
+function parseKey(text, counts) {
+  const n = counts.length, L = 'abcde'.slice(0, Math.max(...counts));
+  const bad = (q, k) => k < 0 || k >= counts[q] ? { error: `A questão ${q + 1} só tem ${counts[q]} alternativas (A a ${LETTERS[counts[q] - 1]}).` } : null;
+  const pairs = [...text.matchAll(/(\d{1,3})\s*[-–.:)=]?\s*([A-Ea-e])(?![A-Za-z])/g)];
+  if (pairs.length >= Math.max(1, Math.ceil(n / 2))) {
+    const out = Array(n).fill(null);
+    for (const m of pairs) { const q = +m[1] - 1, k = L.indexOf(m[2].toLowerCase()); if (q >= 0 && q < n) { const e = bad(q, k); if (e) return e; out[q] = k; } }
+    return out;
+  }
+  if (/^[\sA-Ea-e,;.\-–\/|]+$/.test(text)) {
+    const seq = (text.match(/[A-Ea-e]/g) || []).map(c => L.indexOf(c.toLowerCase()));
+    if (seq.length !== n) return { error: `Você colou ${seq.length} resposta${seq.length === 1 ? '' : 's'}, e a prova tem ${n} questões.` };
+    for (let q = 0; q < n; q++) { const e = bad(q, seq[q]); if (e) return e; }
+    return seq;
+  }
+  return { error: 'Não entendi o texto. Use letras seguidas (ABCDA…) ou pares como 1-A 2-C 3-B.' };
+}
+function tabGabarito(id) {
+  let ver = 0;
+  const cfg = h('div'), verBox = h('div'), pasteBox = h('div'), rows = h('div', { class: 'stack', style: 'gap:6px' }), count = h('div', { class: 'row' });
+  const root = h('div', { class: 'stack' }, cfg, verBox, pasteBox, count, rows);
+  const ex = () => examOf(id);
+  const maxOpt = items => Math.max(2, ...items.map(i => i.options.length));
+  const commit = (keys, items, extra) => { const its = items || ex().items; return dbop(() => S.db.doc('exams/' + id).update(Object.assign({ keys, nOpt: maxOpt(its), editedAt: Date.now() }, items ? { items } : {}, extra || {}))); };
+  const keysOf = e => Array.from({ length: e.versions }, (_, v) => { const k = (e.keys && e.keys[v]) || []; return Array.from({ length: e.items.length }, (_, i) => Number.isInteger(k[i]) ? k[i] : null); });
+  const altSel = (idv, cur) => { const sel = h('select', { id: idv }, [2, 3, 4, 5].map(c => h('option', { value: String(c) }, c + ' alternativas'))); sel.value = String(cur); return sel; };
+  function drawCfg() {
+    const e = ex(); const n = e.items.length, dOpt = e.dOpt || 4, dPt = e.dPt || 1;
+    const nq = h('input', { type: 'text', inputmode: 'numeric', id: 'gb-nq', value: String(n) });
+    const alt = altSel('gb-alt', dOpt);
+    const pt = h('input', { type: 'text', inputmode: 'decimal', id: 'gb-pt', value: String(dPt).replace('.', ',') });
+    cfg.replaceChildren(h('div', { class: 'card stack' },
+      h('div', { class: 'row' },
+        h('label', { class: 'f', for: 'gb-nq', style: 'width:150px' }, 'Número de questões', nq),
+        h('div', { style: 'align-self:flex-end' }, btn('Aplicar', { on: async () => {
+          const nn = parseInt(nq.value, 10);
+          if (!(nn >= 1 && nn <= COMPACT.maxQ)) { toast('Informe de 1 a ' + COMPACT.maxQ + ' questões.'); return; }
+          const cur = ex();
+          const keys = keysOf(cur).map(k => Array.from({ length: nn }, (_, i) => i < k.length ? k[i] : null));
+          const items = Array.from({ length: nn }, (_, i) => i < cur.items.length ? cur.items[i] : keyItem(i, cur.dOpt || 4, cur.dPt || 1));
+          await commit(keys, items) && toast('Prova atualizada');
+        } }))),
+      h('p', { class: 'small muted' }, 'Questões novas usam o padrão abaixo. Diminuir o número apaga o fim do gabarito.'),
+      h('div', { class: 'row' },
+        h('label', { class: 'f', for: 'gb-alt', style: 'width:170px' }, 'Alternativas (padrão)', alt),
+        h('label', { class: 'f', for: 'gb-pt', style: 'width:130px' }, 'Peso (padrão)', pt),
+        h('div', { style: 'align-self:flex-end' }, btn('Igualar todas', { on: async () => {
+          const a = +alt.value, pp = num(pt.value);
+          if (!(pp > 0)) { toast('Informe um peso maior que zero.'); return; }
+          const cur = ex();
+          const keys = keysOf(cur).map(k => k.map(v => v !== null && v >= a ? null : v));
+          await commit(keys, cur.items.map((it, i) => keyItem(i, a, pp)), { dOpt: a, dPt: pp }) && toast('Todas as questões foram igualadas');
+        } }))),
+      h('p', { class: 'small muted' }, 'Para mudar só uma questão, use a lista abaixo: cada uma tem o seu número de alternativas (2 a 5) e o seu peso.')));
+  }
+  function drawPaste() {
+    const e = ex();
+    const ta = h('textarea', { id: 'gb-paste', 'aria-label': 'Colar o gabarito', placeholder: 'Cole o gabarito de uma vez. Ex.: ABCDABCD  ou  1-A 2-C 3-B…', style: 'min-height:64px' });
+    pasteBox.replaceChildren(h('div', { class: 'card stack' }, h('h3', null, 'Colar o gabarito' + (e.versions > 1 ? ' da versão ' + LETTERS[ver] : '')), ta,
+      h('div', { class: 'row' }, btn('Aplicar texto', { cls: 'primary', on: async () => {
+        const cur = ex();
+        const r = parseKey(ta.value.trim(), cur.items.map(i => i.options.length));
+        if (r.error) { toast(r.error); return; }
+        const keys = keysOf(cur); keys[ver] = r;
+        if (await commit(keys, null)) { ta.value = ''; toast('Gabarito aplicado'); }
+      } }))));
+  }
+  function update() {
+    const e = ex();
+    const ae = document.activeElement;
+    if (ae && ae.tagName === 'INPUT' && root.contains(ae)) return; // não apaga o que a pessoa está digitando
+    if (ver >= e.versions) ver = 0;
+    const sig = e.items.length + ':' + (e.dOpt || 4) + ':' + (e.dPt || 1);
+    if (!cfg.firstChild || cfg.dataset.n !== sig) { drawCfg(); cfg.dataset.n = sig; }
+    verBox.replaceChildren(...(e.versions > 1 ? [h('div', { class: 'stack', style: 'gap:5px' }, h('span', { class: 'small muted' }, 'Gabarito da versão'),
+      seg(Array.from({ length: e.versions }, (_, v) => [v, LETTERS[v]]), ver, v => { ver = v; drawPaste(); update(); }))] : []));
+    if (!pasteBox.firstChild) drawPaste();
+    const keys = keysOf(e)[ver];
+    const filled = keys.filter(k => k !== null).length, total = e.items.reduce((a, i) => a + (Number(i.points) || 0), 0);
+    count.replaceChildren(h('span', { class: 'pill ' + (keyComplete(e) ? 'ok' : 'warn') }, keyComplete(e) ? 'Gabarito completo' : `${filled} de ${keys.length} preenchidas${e.versions > 1 ? ' (versão ' + LETTERS[ver] + ')' : ''}`),
+      h('span', { class: 'pill plain num' }, 'Total: ' + fmt(total) + ' pontos'),
+      h('span', { class: 'small muted' }, 'Toque na letra certa de cada questão.'));
+    rows.replaceChildren(...keys.map((k, q) => {
+      const it = e.items[q], cnt = it.options.length;
+      const alt = altSel(`gb-a${q}`, cnt); alt.setAttribute('aria-label', `Alternativas da questão ${q + 1}`);
+      alt.addEventListener('change', () => {
+        const c = +alt.value; alt.blur();
+        const cur = ex(); const items = cur.items.map((x, i) => i === q ? keyItem(q, c, x.points) : x);
+        const all = keysOf(cur).map(kk => kk.map((v, i) => i === q && v !== null && v >= c ? null : v));
+        commit(all, items);
+      });
+      const peso = h('input', { type: 'text', inputmode: 'decimal', id: `gb-p${q}`, 'aria-label': `Peso da questão ${q + 1}`, value: String(it.points).replace('.', ',') });
+      peso.addEventListener('change', () => {
+        const p = num(peso.value); peso.blur();
+        if (!(p > 0)) { toast('O peso precisa ser maior que zero.'); peso.value = String(it.points).replace('.', ','); return; }
+        const cur = ex(); commit(keysOf(cur), cur.items.map((x, i) => i === q ? Object.assign({}, x, { points: p }) : x));
+      });
+      return h('div', { class: 'krow' + (k === null ? ' flag' : '') }, h('span', { class: 'n num' }, q + 1),
+        h('div', { class: 'row', style: 'gap:6px;flex:1;min-width:150px' }, Array.from({ length: cnt }, (_, o) => h('button', { type: 'button', class: 'chip key', 'aria-pressed': String(k === o), 'aria-label': `Questão ${q + 1}, alternativa ${LETTERS[o]} é a certa`,
+          on: { click: () => { const all = keysOf(ex()); all[ver][q] = all[ver][q] === o ? null : o; commit(all, null); } } }, LETTERS[o]))),
+        h('div', { class: 'row', style: 'gap:6px;flex-wrap:nowrap' }, alt, h('label', { class: 'small muted', for: `gb-p${q}` }, 'Peso'), peso));
+    }));
+  }
+  return { el: root, update };
+}
+
+/* ---- Alunos ---- */
+function tabAlunos(id) {
+  const names = h('textarea', { id: 'al-names', placeholder: 'Cole a lista de nomes, um por linha', 'aria-label': 'Nomes dos alunos' });
+  const list = h('div', { class: 'stack', style: 'gap:8px' });
+  const root = h('div', { class: 'stack' },
+    h('div', { class: 'card stack' },
+      h('h3', null, 'Adicionar alunos'),
+      h('p', { class: 'small muted' }, 'Cada aluno recebe um número e uma versão da prova. Esses dados saem impressos na folha-resposta, e a leitura por foto já identifica quem é.'),
+      names,
+      h('div', { class: 'row' }, btn('Adicionar à turma', { cls: 'primary', icon: 'plus', on: async () => {
+        const lines = names.value.split('\n').map(s => s.trim()).filter(Boolean);
+        if (!lines.length) { toast('Digite ou cole ao menos um nome.'); return; }
+        const e = examOf(id); let n = Math.max(0, ...[...S.students.values()].map(s => s.num || 0));
+        if (n + lines.length > 255) { toast('Limite de 255 alunos por prova.'); return; }
+        const ok = await dbop(async () => { for (const name of lines) { n++; await S.db.doc('exams/' + id + '/students/' + uid()).set({ num: n, name, version: (n - 1) % e.versions }); } });
+        if (ok) { names.value = ''; toast(lines.length + ' aluno(s) adicionado(s)'); }
+      } }))),
+    list);
+  function update() {
+    const st = studentsSorted(); const e = examOf(id);
+    if (!st.length) { list.replaceChildren(h('div', { class: 'card empty' }, h('h3', null, 'Nenhum aluno cadastrado'), h('p', null, 'Você também pode corrigir sem cadastro prévio e informar o nome na hora.'))); return; }
+    list.replaceChildren(h('div', { class: 'sect' }, h('h3', null, st.length + ' aluno' + (st.length === 1 ? '' : 's'))),
+      ...st.map(s => h('div', { class: 'card row between', style: 'padding:10px 14px' },
+        h('div', { class: 'row', style: 'flex-wrap:nowrap;min-width:0' }, h('span', { class: 'pill plain num' }, '#' + s.num), h('span', { class: 'qtxt' }, s.name)),
+        h('div', { class: 'row', style: 'flex-wrap:nowrap' },
+          e.versions > 1 ? h('span', { class: 'pill' }, 'Versão ' + LETTERS[s.version]) : null,
+          S.results.has(s.id) ? h('span', { class: 'pill ok' }, 'corrigida') : null,
+          confirmBtn('', async () => { await dbop(async () => { await S.db.doc('exams/' + id + '/results/' + s.id).delete(); await S.db.doc('exams/' + id + '/students/' + s.id).delete(); }); }, { cls: 'sm', icon: 'trash', title: 'Remover aluno' })))));
+  }
+  return { el: root, update };
+}
+
+/* ---- Geração de PDFs ---- */
+const JsPDF = () => MiniPDF;
+/* Folha-resposta compacta (bloco de 176 x 92 mm) para o fim do caderno. */
+const useCompact = exam => (exam.items || []).filter(i => i.type === 'obj').length <= COMPACT.maxQ && exam.nOpt <= 5;
+function drawCompact(doc, exam, ver, who, ox, oy) {
+  const C = COMPACT, n = ver.obj.length, cols = Math.ceil(n / C.rows);
+  doc.setFillColor(0); doc.setDrawColor(0); doc.setTextColor(0);
+  C.markers.forEach(([x, y], i) => { const sz = C.markerSizes[i]; doc.rect(ox + x - sz / 2, oy + y - sz / 2, sz, sz, 'F'); });
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.text('FOLHA-RESPOSTA', ox + 14, oy + 9);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+  doc.text('Aluno(a): ' + (who.name || ''), ox + 48, oy + 9);
+  doc.setLineWidth(0.2); if (!who.name) doc.line(ox + 63, oy + 9.6, ox + 140, oy + 9.6);
+  if (exam.versions > 1) { doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('Versão ' + LETTERS[who.version], ox + 170, oy + 15, { align: 'right' }); }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(5); doc.text('VERSÃO', ox + 14, oy + 18.4); doc.text('ALUNO Nº', ox + 44, oy + 18.4);
+  doc.setFillColor(0); doc.setLineWidth(0.2);
+  const vb = toBits(who.version, SHEET.verBits), sb = toBits(who.num || 0, SHEET.stuBits), bs = C.bitSize;
+  vb.forEach((b, i) => { const [x, y] = C.bitPos('v', i); doc.rect(ox + x - bs / 2, oy + y - bs / 2, bs, bs, b ? 'F' : 'S'); });
+  sb.forEach((b, i) => { const [x, y] = C.bitPos('s', i); doc.rect(ox + x - bs / 2, oy + y - bs / 2, bs, bs, b ? 'F' : 'S'); });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.text(who.num ? 'nº ' + who.num : 'em branco', ox + 88, oy + 23.2);
+  doc.setFontSize(5.5); doc.text('Preencha todo o círculo da alternativa com caneta preta ou azul. Uma marca por questão.', ox + 100, oy + 19.2, { maxWidth: 66 });
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5);
+  for (let c = 0; c < cols; c++) for (let o = 0; o < exam.nOpt; o++) doc.text(LETTERS[o], ox + C.colX0(c) + C.optOff + o * C.optPitch, oy + C.headerY, { align: 'center' });
+  doc.setLineWidth(0.25); doc.setFontSize(6);
+  for (let q = 0; q < n; q++) {
+    const [bx, by] = compactPos(q, 0);
+    doc.text(String(q + 1), ox + bx - C.optOff + 5.5, oy + by + 0.9, { align: 'right' });
+    for (let o = 0; o < ver.obj[q].perm.length; o++) { const [x, y] = compactPos(q, o); doc.circle(ox + x, oy + y, C.bubbleR, 'S'); }
+  }
+}
+const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) || 'prova';
+async function saveFile(filename, data) {
+  try { await S.dl.save({ filename, data }); return true; }
+  catch (e) { if (e && e.code !== 'declined') toast('Não foi possível salvar o arquivo neste dispositivo.'); return false; }
+}
+
+/* ---- Imprimir ---- */
+/* Folhas compactas de 17,6 x 9,2 cm: 3 por página A4 (para recortar) ou 1 por página. */
+function pdfCompactSheets(exam, entries, perPage) {
+  const J = JsPDF(); const doc = new J({ unit: 'mm', format: 'a4' });
+  const C = COMPACT, ox = (210 - C.W) / 2, ys = perPage === 1 ? [20] : [5, 102, 199];
+  entries.forEach((en, i) => {
+    const slot = i % perPage;
+    if (i && slot === 0) doc.addPage();
+    if (slot === 0 && perPage === 3) { doc.setDrawColor(170); doc.setLineWidth(0.15); doc.line(10, 99.5, 200, 99.5); doc.line(10, 196.5, 200, 196.5); }
+    drawCompact(doc, exam, buildVersion(exam, en.version), en, ox, ys[slot]);
+  });
+  return doc.output('blob');
+}
+function tabImprimir(id) {
+  const root = h('div', { class: 'stack' });
+  let perPage = 3, qtd = 6;
+  const markPrinted = () => { const e = examOf(id); if (!e.printedAt) dbop(() => S.db.doc('exams/' + id).update({ printedAt: Date.now() })); };
+  function update() {
+    const ae = document.activeElement;
+    if (ae && ae.tagName === 'INPUT' && root.contains(ae)) return;
+    const e = examOf(id); const st = studentsSorted();
+    if (!S.dl) { root.replaceChildren(notice('Salvar arquivos não está disponível nesta tela. Abra a página no Claude pelo navegador ou pelo app.', 'bad')); return; }
+    const parts = [];
+    if (!keyComplete(e)) parts.push(notice('O gabarito ainda não está completo. Dá para imprimir as folhas agora, mas só será possível corrigir depois de preencher o gabarito.'));
+    const qin = h('input', { type: 'text', inputmode: 'numeric', id: 'pr-qtd', value: String(qtd), 'aria-label': 'Quantidade de folhas em branco', style: 'width:80px', on: { change: ev => { const n = parseInt(ev.target.value, 10); qtd = n >= 1 && n <= 300 ? n : 6; ev.target.value = String(qtd); } } });
+    parts.push(h('div', { class: 'card stack' }, h('h3', null, 'Tamanho da folha'),
+      h('p', { class: 'small muted' }, 'Cada folha mede 17,6 × 9,2 cm. Com 3 por página, recorte nas linhas cinza antes de entregar aos alunos e antes de fotografar.'),
+      seg([[3, '3 por página (recortar)'], [1, '1 por página']], perPage, v => { perPage = v; })));
+    parts.push(h('div', { class: 'card stack' }, h('h3', null, 'Folhas dos alunos'),
+      h('p', { class: 'small muted' }, 'Uma folha por aluno, com nome, versão e número já impressos. A foto identifica o aluno sozinha.'),
+      st.length ? h('div', { class: 'row' }, btn(`Baixar ${st.length} folha${st.length === 1 ? '' : 's'}`, { icon: 'dl', cls: 'primary', on: async () => {
+        if (await saveFile(`folhas-${slug(e.title)}.pdf`, pdfCompactSheets(e, st.map(s => ({ name: s.name, num: s.num, version: s.version })), perPage))) markPrinted();
+      } })) : notice('Cadastre os alunos na aba Alunos para gerar as folhas individuais.', 'info')));
+    parts.push(h('div', { class: 'card stack' }, h('h3', null, 'Folhas em branco'),
+      h('p', { class: 'small muted' }, 'Sem nome. Ao corrigir, você escolhe o aluno na tela.'),
+      h('div', { class: 'row' }, h('label', { class: 'small muted', for: 'pr-qtd' }, 'Quantidade'), qin),
+      h('div', { class: 'row' }, Array.from({ length: e.versions }, (_, v) => btn(e.versions > 1 ? 'Versão ' + LETTERS[v] : 'Baixar PDF', { icon: 'dl', on: async () => {
+        if (await saveFile(`folhas-em-branco-${slug(e.title)}-${LETTERS[v]}.pdf`, pdfCompactSheets(e, Array.from({ length: qtd }, () => ({ name: '', num: 0, version: v })), perPage))) markPrinted();
+      } })))));
+    parts.push(notice('Imprima em A4, em tamanho real (100%, sem “ajustar à página”). Ao corrigir, fotografe uma folha por vez, com os quatro quadrados pretos dos cantos aparecendo.', 'info'));
+    root.replaceChildren(...parts);
+  }
+  return { el: root, update };
+}
+
+/* ---- Corrigir ---- */
+async function loadGray(file) {
+  let bmp;
+  try { bmp = await createImageBitmap(file); }
+  catch (_) { bmp = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(file); }); }
+  const w0 = bmp.width || bmp.naturalWidth, h0 = bmp.height || bmp.naturalHeight;
+  const sc = Math.min(1, 1600 / Math.max(w0, h0));
+  const W = Math.round(w0 * sc), H = Math.round(h0 * sc);
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(bmp, 0, 0, W, H);
+  const d = cx.getImageData(0, 0, W, H).data, gray = new Uint8Array(W * H);
+  for (let i = 0, p = 0; i < gray.length; i++, p += 4) gray[i] = (d[p] * 299 + d[p + 1] * 587 + d[p + 2] * 114) / 1000;
+  return { gray, W, H, canvas: cv };
+}
+const READ_MSG = {
+  multi: 'A foto tem mais de uma folha. Fotografe uma folha por vez (recorte as folhas ou cubra as outras).',
+  corners: 'Não encontrei os quatro quadrados pretos dos cantos. Deixe a folha inteira na foto, bem iluminada e sem sombra por cima.',
+  shape: 'A folha apareceu muito inclinada ou cortada. Fotografe de cima, com a folha toda visível.',
+  contrast: 'A foto ficou escura ou sem contraste. Tente com mais luz.',
+};
+function tabCorrigir(id) {
+  const progress = h('div'), host = h('div', { class: 'stack' });
+  const camIn = h('input', { type: 'file', accept: 'image/*', capture: 'environment', id: 'cam-in' });
+  const galIn = h('input', { type: 'file', accept: 'image/*', id: 'gal-in' });
+  const root = h('div', { class: 'stack' }, progress, host, camIn, galIn);
+  const ex = () => examOf(id);
+  function home() {
+    const e = ex(); const nObj = (e.items || []).filter(i => i.type === 'obj').length;
+    if (!nObj) { host.replaceChildren(notice('Esta prova não tem questões objetivas para corrigir pela foto.')); return; }
+    if (!keyComplete(e)) { host.replaceChildren(notice('O gabarito ainda não está completo. Preencha a resposta certa de todas as questões, em todas as versões, na aba Gabarito.'), btn('Abrir o gabarito', { cls: 'primary', on: () => { S.examTab = 'questoes'; go({ name: 'exam', id }); } })); return; }
+    host.replaceChildren(
+      h('div', { class: 'card stack' },
+        h('h3', null, 'Corrigir uma folha'),
+        h('p', { class: 'small muted' }, 'Fotografe a folha inteira, de cima, com boa luz. Os quatro quadrados pretos dos cantos precisam aparecer. Antes de salvar você confere o que foi lido.'),
+        h('div', { class: 'row' },
+          btn('Fotografar folha', { cls: 'primary big', icon: 'camera', on: () => camIn.click() }),
+          btn('Escolher foto', { cls: 'big', icon: 'image', on: () => galIn.click() }),
+          btn('Lançar à mão', { cls: 'big', icon: 'tap', on: () => startReview(null) }))));
+  }
+  async function onFile(inp) {
+    const f = inp.files && inp.files[0]; inp.value = '';
+    if (!f) return;
+    host.replaceChildren(h('div', { class: 'card empty' }, h('span', { class: 'spin' }), ' Lendo a folha…'));
+    await new Promise(r => setTimeout(r, 40));
+    try {
+      const img = await loadGray(f);
+      const sheet = readSheet(img.gray, img.W, img.H);
+      if (!sheet.ok) { startReview(null, READ_MSG[sheet.reason] || READ_MSG.corners); return; }
+      startReview({ img, sheet });
+    } catch (e) { startReview(null, 'Não consegui abrir essa imagem. Tente outra foto.'); }
+  }
+  camIn.addEventListener('change', () => onFile(camIn));
+  galIn.addEventListener('change', () => onFile(galIn));
+
+  function startReview(scan, failMsg) {
+    const e = ex(); const st = studentsSorted();
+    const code = scan ? scan.sheet : null;
+    let version = code && code.version < e.versions ? code.version : 0;
+    const versionKnown = !!(code && code.version < e.versions);
+    let studentId = '';
+    let codeStudent = null;
+    if (code && code.student > 0) { codeStudent = st.find(s => s.num === code.student) || null; if (codeStudent) studentId = codeStudent.id; }
+    const counts = () => buildVersion(e, version).obj.map(q => q.perm.length);
+    let answers = scan ? readAnswers(code, scan.img.gray, scan.img.W, scan.img.H, counts()) : counts().map(() => -1);
+    const key = () => buildVersion(e, version).obj.map(q => q.correctPos);
+
+    const canvas = scan ? h('canvas', { class: 'preview', 'aria-label': 'Foto com as marcações lidas' }) : null;
+    const info = h('div', { class: 'stack', style: 'gap:8px' });
+    const studentSel = h('select', { id: 'rv-student', 'aria-label': 'Aluno' });
+    const newName = h('input', { type: 'text', id: 'rv-new', placeholder: 'Nome do aluno novo' }); newName.hidden = true;
+    const scoreEl = h('div', { class: 'row' });
+    const grid = h('div', { class: 'ans' });
+    const verHost = h('div');
+    const fill = () => {
+      studentSel.replaceChildren(h('option', { value: '' }, 'Escolha o aluno…'),
+        ...st.map(s => h('option', { value: s.id, selected: s.id === studentId }, `${s.num} · ${s.name}${S.results.has(s.id) ? ' (já corrigida)' : ''}`)),
+        h('option', { value: '__new__' }, '+ Aluno que não está na lista'));
+      studentSel.value = studentId;
+    };
+    studentSel.addEventListener('change', () => { studentId = studentSel.value; newName.hidden = studentId !== '__new__'; if (studentId !== '__new__') { const s = st.find(x => x.id === studentId); if (s && e.versions > 1 && s.version !== version && !scan) { version = s.version; answers = counts().map(() => -1); drawVer(); drawAll(); } } });
+
+    function drawOverlay() {
+      if (!canvas) return;
+      const { img } = scan, cw = Math.min(img.W, 640), k = cw / img.W;
+      canvas.width = cw; canvas.height = Math.round(img.H * k);
+      const c = canvas.getContext('2d'); c.drawImage(img.canvas, 0, 0, canvas.width, canvas.height);
+      const G = sheetGeom(code.kind, answers.length), kk = key(), cnt = counts();
+      c.lineWidth = 2;
+      cnt.forEach((n, q) => { for (let o = 0; o < n; o++) {
+        const p = applyH(code.h, ...G.pos(q, o)); const r = G.r * code.scale * k;
+        if (answers[q] === o) { c.fillStyle = o === kk[q] ? 'rgba(15,170,105,.6)' : 'rgba(225,55,45,.6)'; c.beginPath(); c.arc(p[0] * k, p[1] * k, r, 0, 7); c.fill(); }
+        if (o === kk[q]) { c.strokeStyle = '#0fa469'; c.beginPath(); c.arc(p[0] * k, p[1] * k, r + 1, 0, 7); c.stroke(); }
+      } });
+      c.fillStyle = '#12b5ff'; code.dst.forEach(p => c.fillRect(p[0] * k - 4, p[1] * k - 4, 8, 8));
+    }
+    function drawAll() { drawOverlay(); drawGrid(); drawScore(); }
+    function drawScore() {
+      const g = gradeObj(e, version, answers);
+      const blank = answers.filter(a => a === -1).length, multi = answers.filter(a => a === -2).length;
+      scoreEl.replaceChildren(h('span', { class: 'pill ok num' }, `${g.right} de ${g.n} acertos`), h('span', { class: 'pill num' }, `${fmt(g.pts)} / ${fmt(g.max)} pts`),
+        blank ? h('span', { class: 'pill warn' }, blank + ' em branco') : null, multi ? h('span', { class: 'pill bad' }, multi + ' com mais de uma marca') : null);
+    }
+    function drawGrid() {
+      const kk = key(), cnt = counts();
+      grid.replaceChildren(...answers.map((a, q) => h('div', { class: 'arow' + (a === -2 ? ' flag' : '') },
+        h('span', { class: 'n num' }, q + 1),
+        Array.from({ length: cnt[q] }, (_, o) => h('button', { type: 'button', class: 'chip' + (o === kk[q] ? ' key' : '') + (a === o && o !== kk[q] ? ' wrong' : ''), 'aria-pressed': String(a === o), 'aria-label': `Questão ${q + 1}, alternativa ${LETTERS[o]}`,
+          on: { click: () => { answers[q] = answers[q] === o ? -1 : o; drawAll(); } } }, LETTERS[o])))));
+    }
+    function drawVer() {
+      verHost.replaceChildren(...(e.versions > 1 ? [h('div', { class: 'stack', style: 'gap:5px' }, h('span', { class: 'small muted' }, 'Versão da prova'),
+        seg(Array.from({ length: e.versions }, (_, v) => [v, LETTERS[v]]), version, v => {
+          version = v;
+          answers = scan ? readAnswers(code, scan.img.gray, scan.img.W, scan.img.H, counts()) : counts().map(() => -1);
+          drawAll();
+        }))] : []));
+    }
+    info.replaceChildren(...[
+      failMsg ? notice(failMsg + ' Você pode lançar as respostas à mão.', 'bad') : null,
+      scan ? (versionKnown ? notice(`Versão ${LETTERS[version]} lida da folha${codeStudent ? ' · ' + codeStudent.name : code.student ? ' · aluno nº ' + code.student + ' não está na lista' : ''}.`, 'ok') : notice('A versão não foi identificada na folha. Confira abaixo.')) : null].filter(Boolean));
+    fill(); drawVer(); drawAll();
+
+    const save = btn('Salvar correção', { cls: 'primary', icon: 'check', on: async () => {
+      let sid = studentId, name = '';
+      if (!sid) { toast('Escolha o aluno.'); studentSel.focus(); return; }
+      save.disabled = true;
+      if (sid === '__new__') {
+        name = newName.value.trim();
+        if (!name) { toast('Digite o nome do aluno.'); newName.focus(); save.disabled = false; return; }
+        const nn = Math.max(0, ...[...S.students.values()].map(s => s.num || 0)) + 1; sid = uid();
+        if (!await dbop(() => S.db.doc('exams/' + id + '/students/' + sid).set({ num: nn, name, version }))) { save.disabled = false; return; }
+      } else name = st.find(s => s.id === sid).name;
+      const prev = S.results.get(sid);
+      const ok = await dbop(() => S.db.doc('exams/' + id + '/results/' + sid).set({ studentId: sid, name, version, answers, open: prev && prev.open || {}, by: S.me && S.me.id || null, byName: S.me && S.me.name || '', ts: Date.now(), via: scan ? 'foto' : 'manual' }));
+      save.disabled = false;
+      if (ok) { toast('Correção salva: ' + name); home(); window.scrollTo({ top: 0 }); }
+    } });
+    host.replaceChildren(h('div', { class: 'stack' },
+      h('h3', null, scan ? 'Confira o que foi lido' : 'Lançar respostas'),
+      info, canvas,
+      h('div', { class: 'card stack' },
+        h('label', { class: 'f', for: 'rv-student' }, 'Aluno', studentSel), newName, verHost),
+      scoreEl,
+      h('p', { class: 'small muted' }, 'Toque numa alternativa para corrigir a leitura. O círculo verde é a resposta certa na versão escolhida.'),
+      grid,
+      h('div', { class: 'row' }, save, btn('Cancelar', { on: home }))));
+  }
+  function update() {
+    const e = ex(); const st = S.students.size;
+    const done = [...S.results.keys()].filter(k => S.students.has(k)).length;
+    progress.replaceChildren(st ? h('div', { class: 'card stack', style: 'gap:8px' },
+      h('div', { class: 'row between' }, h('b', null, `${done} de ${st} aluno${st === 1 ? '' : 's'} corrigido${done === 1 ? '' : 's'}`), h('span', { class: 'small muted' }, 'atualiza ao vivo para todos')),
+      h('div', { class: 'bar' }, h('i', { style: `width:${Math.round(100 * done / st)}%` }))) : h('div'));
+    if (!host.firstChild || host.dataset.home === '1') { if (!host.firstChild) { host.dataset.home = '1'; home(); } }
+  }
+  return { el: root, update };
+}
+
+/* ---- Notas ---- */
+function tabNotas(id) {
+  const root = h('div', { class: 'stack' });
+  const expanded = new Set();
+  const profCache = {};
+  async function whoNames(ids) {
+    if (!S.user) return {};
+    try { const ps = await S.user.profiles(ids); const o = {}; ids.forEach(i => o[i] = ps[i] && ps[i].name || ''); return o; } catch (_) { return {}; }
+  }
+  function totals(e, s, r) {
+    const g = gradeObj(e, r.version, r.answers || []);
+    const open = (e.items || []).filter(i => i.type === 'open');
+    const op = open.reduce((a, i) => a + (Number(r.open && r.open[i.id]) || 0), 0);
+    const maxAll = (e.items || []).reduce((a, i) => a + (Number(i.points) || 0), 0);
+    const total = g.pts + op;
+    return { g, op, total, maxAll, nota: maxAll ? total / maxAll * 10 : 0, openDone: open.every(i => r.open && r.open[i.id] != null), nOpen: open.length };
+  }
+  function csv(e, rows) {
+    const open = (e.items || []).filter(i => i.type === 'open');
+    const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+    const n = v => String(Math.round(v * 100) / 100).replace('.', ',');
+    const head = ['Nº', 'Aluno', 'Versão', 'Acertos', 'Pontos objetivas', ...open.map((_, i) => 'Aberta ' + (i + 1)), 'Total', 'Máximo', 'Nota (0 a 10)'];
+    const lines = [head.map(q).join(';')];
+    rows.forEach(({ s, r, t }) => lines.push([s.num, q(s.name), e.versions > 1 ? LETTERS[r ? r.version : s.version] : '-', r ? t.g.right + '/' + t.g.n : '', r ? n(t.g.pts) : '',
+      ...open.map(i => r && r.open && r.open[i.id] != null ? n(r.open[i.id]) : ''), r ? n(t.total) : '', n((e.items || []).reduce((a, i) => a + (Number(i.points) || 0), 0)), r ? n(t.nota) : ''].join(';')));
+    return '﻿' + lines.join('\r\n');
+  }
+  async function update() {
+    const ae = document.activeElement;
+    if (ae && ae.tagName === 'INPUT' && root.contains(ae)) return; // não apaga o que a pessoa está digitando
+    const e = examOf(id); const st = studentsSorted();
+    const rows = st.map(s => { const r = S.results.get(s.id); return { s, r, t: r ? totals(e, s, r) : null }; });
+    const corrected = rows.filter(x => x.r);
+    const open = (e.items || []).filter(i => i.type === 'open');
+    if (!st.length) { root.replaceChildren(h('div', { class: 'card empty' }, h('h3', null, 'Sem alunos'), h('p', null, 'As notas aparecem aqui depois que você cadastrar os alunos e corrigir as folhas.'))); return; }
+    const notas = corrected.map(x => x.t.nota);
+    const names = await whoNames([...new Set(corrected.map(x => x.r.by).filter(Boolean))]);
+    const parts = [];
+    parts.push(h('div', { class: 'statgrid' },
+      stat(`${corrected.length}/${st.length}`, 'corrigidas'),
+      stat(notas.length ? fmt(notas.reduce((a, b) => a + b, 0) / notas.length) : '–', 'média (0 a 10)'),
+      stat(notas.length ? fmt(Math.max(...notas)) : '–', 'maior nota'),
+      stat(notas.length ? fmt(Math.min(...notas)) : '–', 'menor nota')));
+    if (S.dl) parts.push(h('div', { class: 'row' }, btn('Baixar planilha (CSV)', { icon: 'dl', on: () => saveFile(`notas-${slug(e.title)}.csv`, csv(e, rows)) })));
+    parts.push(h('div', { class: 'card scroll', style: 'padding:6px 8px' }, h('table', { class: 't' },
+      h('thead', null, h('tr', null, h('th', null, 'Aluno'), h('th', { class: 'r' }, 'Objetivas'), open.length ? h('th', { class: 'r' }, 'Abertas') : null, h('th', { class: 'r' }, 'Nota'))),
+      h('tbody', null, ...rows.flatMap(({ s, r, t }) => {
+        const isOpen = expanded.has(s.id);
+        const tr = h('tr', { style: r ? 'cursor:pointer' : '', on: { click: () => { if (!r) return; expanded.has(s.id) ? expanded.delete(s.id) : expanded.add(s.id); update(); } } },
+          h('td', null, h('div', null, s.name), h('div', { class: 'small muted' }, `#${s.num}${e.versions > 1 ? ' · Versão ' + LETTERS[r ? r.version : s.version] : ''}`)),
+          h('td', { class: 'r num' }, r ? `${fmt(t.g.pts)}/${fmt(t.g.max)}` : h('span', { class: 'pill plain' }, 'pendente')),
+          open.length ? h('td', { class: 'r num' }, r ? (t.openDone ? fmt(t.op) : h('span', { class: 'pill warn' }, 'lançar')) : '') : null,
+          h('td', { class: 'r num' }, r ? h('b', null, fmt(t.nota)) : ''));
+        const out = [tr];
+        if (r && isOpen) out.push(h('tr', null, h('td', { colspan: 4, style: 'padding-top:0;border-top:0' }, detail(e, s, r, t, names))));
+        return out;
+      })))));
+    root.replaceChildren(...parts);
+  }
+  function stat(v, l) { return h('div', { class: 'stat' }, h('b', { class: 'num' }, v), h('span', null, l)); }
+  function detail(e, s, r, t, names) {
+    const ver = buildVersion(e, r.version); const open = (e.items || []).filter(i => i.type === 'open');
+    const marks = ver.obj.map((q, i) => { const a = (r.answers || [])[i]; const ok = a === q.correctPos;
+      return h('span', { class: 'pill ' + (ok ? 'ok' : a === -1 ? 'plain' : 'bad'), title: 'Questão ' + (i + 1) }, `${i + 1} ${ok ? '✓' : a >= 0 ? LETTERS[a] : '–'}`); });
+    return h('div', { class: 'detail stack', style: 'gap:10px' },
+      h('div', { class: 'row', style: 'gap:6px' }, marks),
+      open.map((it, i) => {
+        const inp = h('input', { type: 'text', inputmode: 'decimal', id: `op-${s.id}-${it.id}`, value: r.open && r.open[it.id] != null ? String(r.open[it.id]).replace('.', ',') : '', placeholder: '0', 'aria-label': 'Pontos da questão aberta ' + (i + 1),
+          on: { change: async () => {
+            const raw = inp.value.trim(); let v = null;
+            if (raw !== '') { v = num(raw); if (!(v >= 0) || v > it.points) { toast(`Digite de 0 a ${fmt(it.points)}.`); inp.value = ''; return; } }
+            dbop(() => S.db.doc('exams/' + id + '/results/' + s.id).update({ open: { [it.id]: v }, ts: Date.now() }));
+          } } });
+        return h('div', { class: 'openin' }, h('label', { for: inp.id, class: 'grow qtxt small' }, `Aberta ${i + 1}: ${it.text.slice(0, 80)}${it.text.length > 80 ? '…' : ''}`), h('div', { class: 'row', style: 'flex-wrap:nowrap' }, inp, h('span', { class: 'small muted num' }, '/ ' + fmt(it.points))));
+      }),
+      h('div', { class: 'small muted' }, `Corrigida ${r.via === 'foto' ? 'por foto' : 'à mão'}${names[r.by] || r.byName ? ' por ' + (names[r.by] || r.byName) : ''}.`),
+      h('div', { class: 'row' }, btn('Corrigir de novo', { cls: 'sm', on: () => { S.examTab = 'corrigir'; go({ name: 'exam', id }); } }),
+        confirmBtn('Excluir correção', () => dbop(() => S.db.doc('exams/' + id + '/results/' + s.id).delete()), { cls: 'sm' })));
+  }
+  return { el: root, update };
+}
+
+/* ============ arquivos: enviar prova e receber correções ============ */
+const SAFE_ID = /^[A-Za-z0-9_\-.~:@+]{1,200}$/;
+async function importText(text) {
+  let p;
+  try { p = JSON.parse(text); } catch (_) { throw new Error('Esse arquivo não é do Gabaritou.'); }
+  if (!p || p.gabaritou !== 1 || !p.exam || !SAFE_ID.test(String(p.exam.id)) || !p.exam.data || !Array.isArray(p.exam.data.items)) throw new Error('Esse arquivo não é do Gabaritou.');
+  if (p.exam.data.mode !== 'key') throw new Error('Esta prova tem questões. Só o Gabaritou completo abre esse arquivo.');
+  if (p.exam.data.items.length > COMPACT.maxQ) throw new Error('Esta prova tem mais de ' + COMPACT.maxQ + ' questões e não cabe na folha compacta.');
+  const id = String(p.exam.id);
+  const students = (p.students || []).filter(x => x && SAFE_ID.test(String(x.id)) && x.data && x.data.name);
+  const results = (p.results || []).filter(x => x && SAFE_ID.test(String(x.id)) && x.data && Array.isArray(x.data.answers));
+  const existing = S.exams.get(id);
+  let examUpdated = false;
+  if (!existing) await S.db.doc('exams/' + id).set(p.exam.data);
+  else if ((p.exam.data.editedAt || 0) > (existing.editedAt || 0)) { await S.db.doc('exams/' + id).set(Object.assign({}, existing, p.exam.data)); examUpdated = true; }
+  const curSt = new Map((await S.db.collection('exams/' + id + '/students').get()).docs.map(d => [d.id, d.data()]));
+  let maxNum = Math.max(0, ...[...curSt.values()].map(x => x.num || 0));
+  let newStudents = 0, added = 0, updated = 0;
+  for (const st of students) {
+    if (curSt.has(st.id)) continue;
+    const d = Object.assign({}, st.data);
+    if ([...curSt.values()].some(x => x.num === d.num)) d.num = ++maxNum; else maxNum = Math.max(maxNum, d.num || 0);
+    await S.db.doc('exams/' + id + '/students/' + st.id).set(d); curSt.set(st.id, d); newStudents++;
+  }
+  const curRes = new Map((await S.db.collection('exams/' + id + '/results').get()).docs.map(d => [d.id, d.data()]));
+  for (const r of results) {
+    const cur = curRes.get(r.id);
+    if (cur && (r.data.ts || 0) <= (cur.ts || 0)) continue;
+    await S.db.doc('exams/' + id + '/results/' + r.id).set(r.data); cur ? updated++ : added++;
+  }
+  return { id, title: existing ? existing.title : p.exam.data.title, created: !existing, examUpdated, added, updated, newStudents };
+}
+function importSummary(r) {
+  const bits = [];
+  if (r.examUpdated) bits.push('gabarito atualizado');
+  if (r.created) bits.push('prova “' + r.title + '” importada');
+  if (r.added) bits.push(r.added + ' correção(ões) nova(s)');
+  if (r.updated) bits.push(r.updated + ' atualizada(s)');
+  if (r.newStudents) bits.push(r.newStudents + ' aluno(s) novo(s)');
+  return bits.length ? 'Importado: ' + bits.join(', ') + '.' : 'Nada novo neste arquivo.';
+}
+function pickImport(examId) {
+  const inp = h('input', { type: 'file', accept: '.json,application/json' });
+  document.body.append(inp);
+  inp.addEventListener('change', async () => {
+    const f = inp.files && inp.files[0]; inp.remove();
+    if (!f) return;
+    try {
+      const r = await importText(await f.text());
+      toast(importSummary(r));
+      if (!examId || r.created) { S.examTab = r.created ? 'questoes' : 'notas'; go({ name: 'exam', id: r.id }); }
+    } catch (e) { toast(e && e.message || 'Não consegui importar esse arquivo.'); }
+  });
+  inp.click();
+}
+function exportExam(id) {
+  const e = S.exams.get(id);
+  const payload = { gabaritou: 1, ts: Date.now(), from: S.me && S.me.name || '', exam: { id, data: e },
+    students: [...S.students].map(([sid, d]) => ({ id: sid, data: d })), results: [...S.results].map(([rid, d]) => ({ id: rid, data: d })) };
+  const day = new Date().toISOString().slice(0, 10);
+  return saveFile(`gabarito-${slug(e.title)}-${day}.json`, JSON.stringify(payload));
+}
+function tabArquivos(id) {
+  const root = h('div', { class: 'stack' });
+  function update() {
+    const e = examOf(id);
+    const nRes = S.results.size, nSt = S.students.size;
+    root.replaceChildren(
+      h('div', { class: 'card stack' }, h('h3', null, 'Enviar a prova a um colaborador'),
+        h('p', { class: 'small muted' }, 'O arquivo leva as questões, os alunos e as correções que já existem. Mande junto o app Gabaritou, para a pessoa abrir no navegador do celular ou do computador.'),
+        S.dl ? h('div', { class: 'row' }, btn('Baixar arquivo da prova', { icon: 'dl', cls: 'primary', on: () => exportExam(id) })) : notice('Salvar arquivos não está disponível nesta tela.', 'bad')),
+      h('div', { class: 'card stack' }, h('h3', null, 'Receber correções'),
+        h('p', { class: 'small muted' }, 'Importe o arquivo que o colaborador devolveu. Só entram as folhas novas ou mais recentes, e nada do que já está aqui é apagado.'),
+        h('div', { class: 'row' }, btn('Importar arquivo', { icon: 'dl', on: () => pickImport(id) }))),
+      h('div', { class: 'card stack' }, h('h3', null, 'Passo a passo'),
+        h('ol', { class: 'small muted', style: 'margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px' },
+          h('li', null, 'Você baixa o arquivo da prova e o envia ao colaborador, junto com o app.'),
+          h('li', null, 'Ele abre o app, toca em Importar arquivo e escolhe o arquivo da prova.'),
+          h('li', null, 'Corrige as folhas na aba Corrigir. Tudo fica guardado no aparelho dele.'),
+          h('li', null, 'Ao terminar, ele baixa o arquivo na aba Arquivos e devolve a você.'),
+          h('li', null, 'Você importa o arquivo aqui, e as notas aparecem na aba Notas.'))),
+      h('div', { class: 'card stack' }, h('h3', null, 'Excluir prova'),
+        h('p', { class: 'small muted' }, `Apaga a prova, ${nSt} aluno${nSt === 1 ? '' : 's'} e ${nRes} correç${nRes === 1 ? 'ão' : 'ões'} deste aparelho. Baixe o arquivo antes se quiser guardar uma cópia.`),
+        h('div', { class: 'row' }, confirmBtn('Excluir prova', async () => {
+          const ok = await dbop(async () => {
+            for (const k of S.results.keys()) await S.db.doc('exams/' + id + '/results/' + k).delete();
+            for (const k of S.students.keys()) await S.db.doc('exams/' + id + '/students/' + k).delete();
+            await S.db.doc('exams/' + id).delete();
+          });
+          if (ok) go({ name: 'exams' });
+        }, { icon: 'trash' }))));
+  }
+  return { el: root, update };
+}
+
+/* ============ início ============ */
+async function boot() {
+  const who = document.getElementById('who');
+  const c = window.claude;
+  if (c && c.use) {
+    [S.db, S.user, S.dl] = await Promise.all([c.use('db'), c.use('user'), c.use('downloads')]);
+    if (S.user) {
+      try { S.me = await S.user.me(); } catch (_) {}
+      try { S.canWrite = await S.user.can('data.write'); } catch (_) {}
+      if (S.me) who.replaceChildren(h('img', { src: S.me.avatarUrl, alt: '' }), h('span', null, S.me.name || 'Você'));
+    }
+  } else {
+    S.local = true; S.db = makeLocalDb(); S.dl = localDl; S.canWrite = true;
+    let nm = ''; try { nm = localStorage.getItem('gabrapido:name') || ''; } catch (_) {}
+    S.me = { id: 'local', name: nm };
+    who.replaceChildren(h('span', { class: 'pill warn' }, 'Offline'),
+      h('input', { type: 'text', id: 'who-name', value: nm, placeholder: 'Seu nome', 'aria-label': 'Seu nome', style: 'width:120px;padding:5px 8px', on: { input: ev => { S.me.name = ev.target.value.trim(); try { localStorage.setItem('gabrapido:name', S.me.name); } catch (_) {} } } }));
+  }
+  render();
+  if (!S.db) return;
+  const mainEl = document.getElementById('main');
+  if (S.canWrite === false) mainEl.before(notice('Você pode ver as provas, mas não alterar. Peça ao dono da página acesso de colaborador para ajudar na correção.'));
+  if (S.local) mainEl.before(notice(S.db.persistent() ? 'Modo offline: as provas ficam guardadas só neste navegador. Para não perder nada, baixe o arquivo na aba Arquivos.' : 'Este navegador não guarda dados entre visitas. Baixe o arquivo na aba Arquivos antes de fechar a página.', 'info'));
+  let gotExams = false;
+  const loadTimer = setTimeout(() => { if (!S.ready) { S.ready = true; notify(); toast('Os dados ainda não responderam. Verifique a conexão.'); } }, 10000);
+  const done = () => { if (gotExams) { S.ready = true; clearTimeout(loadTimer); } };
+  S.db.collection('exams').onSnapshot(s => { S.exams = new Map(s.docs.map(d => [d.id, d.data()])); gotExams = true; done(); notify(); }, e => { S.loadErr = e; gotExams = true; done(); notify(); });
+}
+boot();
+</script>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => {
+      console.warn('Não foi possível registrar o modo offline:', err);
+    });
+  });
+}
+</script>
+
+</body></html>

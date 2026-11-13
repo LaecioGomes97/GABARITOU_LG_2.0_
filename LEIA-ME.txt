@@ -1,0 +1,29 @@
+# Gabaritou LG 2.0 — versão PWA
+
+## O que foi preparado
+- `index.html`: seu HTML original com metadados de instalação e registro do Service Worker.
+- `manifest.webmanifest`: nome, ícones e aparência de aplicativo.
+- `sw.js`: armazena a estrutura principal em cache para abrir novamente sem internet.
+- `icons/`: ícones PNG para instalação.
+
+## Publicação
+O PWA precisa estar hospedado em um endereço HTTPS (por exemplo, GitHub Pages, Netlify ou servidor próprio). Não basta abrir o `index.html` diretamente pelo gerenciador de arquivos.
+
+## Instalar no iPhone
+1. Abra o endereço HTTPS no Safari.
+2. Toque em **Compartilhar**.
+3. Escolha **Adicionar à Tela de Início**.
+4. Confirme em **Adicionar**.
+
+## Instalar no Android
+Abra o endereço HTTPS no Chrome e use **Instalar app** ou **Adicionar à tela inicial**.
+
+## Observações importantes sobre dados e sincronização
+- O HTML original já possui um modo local que guarda dados no armazenamento do navegador (`localStorage`). Esse modo pode ser usado offline no mesmo aparelho e navegador.
+- O cache do PWA permite carregar a aplicação sem internet depois da primeira visita online.
+- A versão HTML original também procura `window.claude` para usar serviços de banco de dados/usuário/downloads do ambiente Claude. Fora desse ambiente, ela entra no modo local.
+- **Não foi criada uma sincronização automática entre aparelhos/usuários.** No modo local, os dados ficam naquele aparelho/navegador. O HTML original oferece exportação/importação de arquivos JSON para transferir provas e correções manualmente.
+- Para sincronização automática pela internet entre iPhone, Android e computador, será necessário configurar um backend/banco de dados com autenticação e regras de acesso.
+
+## Atualização
+Ao publicar uma nova versão, altere `CACHE_NAME` em `sw.js` (por exemplo, para `gabaritou-lg-pwa-v2`) para renovar o cache dos dispositivos.
